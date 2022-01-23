@@ -2,7 +2,12 @@ import re
 from os.path import exists
 
 
-def create_5_letter_word_file_if_missing(input_file="word_dictionary.txt", out_file_name="five_letter_words.txt"):
+def get_5_letter_word_file(file="five_letter_words.txt"):
+    create_5_letter_word_file_if_missing(file)
+    return open(file, 'r')
+
+
+def create_5_letter_word_file_if_missing(out_file_name="five_letter_words.txt", input_file="word_dictionary.txt"):
     if not exists(out_file_name):
         create_5_letter_word_file(input_file)
     else:

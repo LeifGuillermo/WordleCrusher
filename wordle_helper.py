@@ -1,39 +1,8 @@
-import argparse
 import re
 import string
 
-
-# TODO: a 'wordle_guess' data structure could be made which has positions of characters and their accuracy
-# (character, index, accuracy)
-# character = any character
-# index = any index between 0 and 4 (for the five positions of a wordle word)
-# accuracy = any of ('hit', 'miss', 'unused') - should these just be constants? an enum would be cool.
-
-def read_command_line_args():
-    parser = argparse.ArgumentParser(description="Parse wordle characters.")
-    parser.add_argument('-i', "--incorrect", type=list, default=[],
-                        help="List of incorrect chars that are not in the Wordle word."
-                             "(default: [])")
-
-    parser.add_argument('-m', "--misplaced", type=list, default=[],
-                        help="List of misplaced chars that are in the wordle word, but the location is unknown."
-                             "(default: [])")
-
-    parser.add_argument('-c', "--correct", type=list, default=[None, None, None, None, None],
-                        help="A list of chars whose location/index in the tuple is also the correct location/index of "
-                             "the char in the Wordle word. (default: [None, None, None, None, None])")
-
-    parser.add_argument('-r', "--ranked", action="store_true",
-                        help="Print the most common characters in each position, ranked.")
-    parser.add_argument('-a', "--all", action="store_true", help="Print all 5-letter words.")
-
-    args = parser.parse_args()
-
-    print('processing the following arguments:\n', args)
-
-    correct = [None if elem == '_' else elem for elem in args.correct]
-
-    return args.incorrect, args.misplaced, correct, args.ranked, args.all
+import command_line_reader
+import word_dictionary_converter
 
 
 def word_is_alphabetic_only(word):
@@ -193,8 +162,10 @@ def character_count_stats(file, incorrect_chars=None, correct_chars=None, chars_
 
 
 def main():
-    file = open("word_dictionary.txt", 'r')
-    incorrect_chars, misplaced_chars, correct_chars, print_ranked, print_all = read_command_line_args()
+    file = word_dictionary_converter.get_5_letter_word_file()
+    args = command_line_reader.read_command_line_args()
+
+    incorrect_chars, misplaced_chars, correct_chars, print_ranked, print_all = args
     character_count_stats(file, incorrect_chars, correct_chars, misplaced_chars, print_ranked, print_all)
 
 
