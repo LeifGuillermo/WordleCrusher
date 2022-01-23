@@ -30,7 +30,7 @@ def read_command_line_args():
     args = parser.parse_args()
 
     print('processing the following arguments:\n', args)
-    
+
     correct = [None if elem == '_' else elem for elem in args.correct]
 
     return args.incorrect, args.misplaced, correct, args.ranked, args.all
@@ -164,8 +164,6 @@ def character_count_stats(file, incorrect_chars=None, correct_chars=None, chars_
     character_position_counts = create_count_dictionaries_for_letter_placements(
         lowercase_five_letter_non_acronym_words)
 
-    # print(lowercase_five_letter_non_acronym_words)
-
     if print_ranked:
         for n in range(1, 27):
             n_max_counts = [get_n_most_max_character_counts_tuple(count_dictionary, n) for count_dictionary in
@@ -195,11 +193,7 @@ def character_count_stats(file, incorrect_chars=None, correct_chars=None, chars_
 
 
 def main():
-    file = open("words.txt", 'r')
-
-    # bad_chars = ['e', 't', 'y', 'o', 'a', 's', 'f', 'l', 'z', 'n']
-    # incorrectly_placed_chars = ['q', 'j']
-    # correctly_placed_chars = (None, None, None, None, None)
+    file = open("word_dictionary.txt", 'r')
     incorrect_chars, misplaced_chars, correct_chars, print_ranked, print_all = read_command_line_args()
     character_count_stats(file, incorrect_chars, correct_chars, misplaced_chars, print_ranked, print_all)
 
