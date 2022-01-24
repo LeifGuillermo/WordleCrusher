@@ -2,7 +2,7 @@ import re
 import string
 
 import command_line_reader
-import word_dictionary_converter
+import file_handler
 
 
 def word_is_alphabetic_only(word):
@@ -45,8 +45,8 @@ def create_dictionary_of_characters_at_word_index(index, all_words_list):
 def get_top_five_most_common_characters(all_words_list):
     dictionary = dict.fromkeys(string.ascii_lowercase, 0)
     for word in all_words_list:
-        for character in word:
-            if character not in dictionary:
+        for character in word.strip():
+            if (not character == '_') and (character not in dictionary):
                 raise Exception("Non-alphabetic character: " + character)
             else:
                 dictionary[character] = dictionary[character] + 1  # increment count for character
@@ -88,6 +88,24 @@ def find_words_with_characters(words, character_list):
     return [word for word in words if all(character in word for character in character_list)]
 
 
+def find_words_with_characters_for_guesses_out_of_place(words, guesses):
+    good_words = []
+    for word in words:
+        for guess in guesses:
+            word_if_good = filter_words_by_correct_characters_in_wrong_places(word, guess)
+            if word_if_good is not None:
+                good_words.append(word_if_good.strip())
+    return good_words
+
+
+def filter_words_by_correct_characters_in_wrong_places(word, guess):
+    for i in range(len(guess)):
+        current_char = guess[i]
+        if (not current_char == '_') and (current_char in word and (not word.index(guess[i]) == i)):
+            return None
+    return word
+
+
 def remove_words_from_list_with_characters(word_list, character_list):
     words = [word for word in word_list if all(char not in word for char in character_list)]
     return words
@@ -114,8 +132,33 @@ def ordinal(num):
     return "%d%s%s" % (num, "'", "tsnrhtdd"[(num // 10 % 10 != 1) * (num % 10 < 4) * num % 10::4])
 
 
+def print_ranked_chars(character_position_counts):
+    for n in range(1, 27):
+        n_max_counts = [get_n_most_max_character_counts_tuple(count_dictionary, n) for count_dictionary in
+                        character_position_counts]
+        print(ordinal(n), " most common characters at positions: ", n_max_counts, sep='')
+
+
+def is_no_char_inputs(incorrect_inputs, out_of_place_inputs, correct_inputs):
+    no_incorrect_chars = len(incorrect_inputs) == 0
+    no_chars_out_of_place = len(out_of_place_inputs) == 0
+    no_correct_chars = all(char is None for char in correct_inputs)
+    return no_incorrect_chars and no_chars_out_of_place and no_correct_chars
+
+
+def filter_words_to_possible_words(words, incorrect_chars, correct_chars, chars_out_of_place):
+    found_words = find_words_with_characters_for_guesses_out_of_place(words, chars_out_of_place)
+    found_words = find_words_with_characters_at_indexes(found_words, correct_chars)
+    available_words = remove_words_from_list_with_characters(found_words, incorrect_chars)
+    return available_words
+
+
+def filter_char_counts_base_off_of_remaining_words(available_words):
+    return get_sorted_available_non_zero_counts(available_words)
+
+
 def character_count_stats(file, incorrect_chars=None, correct_chars=None, chars_out_of_place=None, print_ranked=False,
-                          print_all=False):
+                          print_stats=False):
     if chars_out_of_place is None:
         chars_out_of_place = []
     if incorrect_chars is None:
@@ -123,46 +166,29 @@ def character_count_stats(file, incorrect_chars=None, correct_chars=None, chars_
     if correct_chars is None:
         correct_chars = []
 
-    wordle_word_length = 5
-    five_letter_words = [word.strip() for word in file.readlines() if
-                         len(word.strip()) == wordle_word_length and word_is_alphabetic_only(word.strip())]
-
-    five_letter_non_acronym_words = list(filter(lambda word: word != word.upper(), five_letter_words))
-    lowercase_five_letter_non_acronym_words = [word.lower() for word in five_letter_non_acronym_words]
-
-    character_position_counts = create_count_dictionaries_for_letter_placements(
-        lowercase_five_letter_non_acronym_words)
+    five_letter_words = [word.strip() for word in file.readlines()]  # Remove newline characters from the words
 
     if print_ranked:
-        for n in range(1, 27):
-            n_max_counts = [get_n_most_max_character_counts_tuple(count_dictionary, n) for count_dictionary in
-                            character_position_counts]
-            print(ordinal(n), " most common characters at positions: ", n_max_counts, sep='')
+        character_position_counts = create_count_dictionaries_for_letter_placements(five_letter_words)
+        print_ranked_chars(character_position_counts)
 
-    no_incorrect_chars = len(incorrect_chars) == 0
-    no_chars_out_of_place = len(chars_out_of_place) == 0
-    no_correct_chars = all(char is None for char in correct_chars)
-    no_char_inputs = no_incorrect_chars and no_chars_out_of_place and no_correct_chars
-
-    if no_char_inputs:
-        total_character_counts_dict = get_top_five_most_common_characters(lowercase_five_letter_non_acronym_words)
+    if print_stats:
+        total_character_counts_dict = get_top_five_most_common_characters(five_letter_words)
         print("total character counts: ",
               dict(sorted(total_character_counts_dict.items(), key=lambda item: item[1], reverse=True)))
 
-    found_words = find_words_with_characters(lowercase_five_letter_non_acronym_words, chars_out_of_place)
-    found_words = find_words_with_characters_at_indexes(found_words, correct_chars)
+    available_words = filter_words_to_possible_words(five_letter_words, incorrect_chars, correct_chars,
+                                                     chars_out_of_place)
+    available_counts = filter_char_counts_base_off_of_remaining_words(available_words)
 
-    available_words = remove_words_from_list_with_characters(found_words, incorrect_chars)
-    available_counts = get_sorted_available_non_zero_counts(available_words)
-
-    if not no_char_inputs:
+    if print_stats:
         print("available words: ", available_words)
 
     print("available counts: ", available_counts)
 
 
 def main():
-    file = word_dictionary_converter.get_5_letter_word_file()
+    file = file_handler.get_5_letter_word_file()
     args = command_line_reader.read_command_line_args()
 
     incorrect_chars, misplaced_chars, correct_chars, print_ranked, print_all = args

@@ -1,7 +1,6 @@
 import re
 from os.path import exists
 
-
 def get_5_letter_word_file(file="five_letter_words.txt"):
     create_5_letter_word_file_if_missing(file)
     return open(file, 'r')
