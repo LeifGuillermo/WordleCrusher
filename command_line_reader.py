@@ -38,6 +38,6 @@ def parse_misplaced_character_inputs(misplaced_argument):
     this input would be used to show that two guesses had misplaced characters. The first guess has a misplaced
     character at index 2, with a value of r. The second guess has two misplaced characters at indexes 3 and 4, with
     values a and c respectively. Notice that the guesses are separated by commas.
+    Example: convert from ['_','_','r','_','_','_',',','_','_','_','_','a','c'] to ['__r__','___ac']
     """
-    # convert from ['_','_','r','_','_','_',',','_','_','_','_','a','c'] to ['__r__','___ac']
     return "".join(misplaced_argument).split(',')
