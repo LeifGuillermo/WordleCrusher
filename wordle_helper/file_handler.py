@@ -1,14 +1,20 @@
 import re
-from os.path import exists
+from os.path import exists, dirname
 
-def get_5_letter_word_file(file="five_letter_words.txt"):
+# THESE PATHS WILL NOT WORK WHEN RUN FROM PYTHON INTERPRETER DUE TO THE RELIANCE ON __FILE__
+PATH_TO_THIS_FILE = dirname(__file__)
+DEFAULT_OUTPUT_FILE = PATH_TO_THIS_FILE + '\\..\\dictionary_files\\five_letter_words.txt'
+DEFAULT_INPUT_FILE = PATH_TO_THIS_FILE + '\\..\\dictionary_files\\word_dictionary.txt'
+
+
+def get_5_letter_word_file(file=DEFAULT_OUTPUT_FILE):
     create_5_letter_word_file_if_missing(file)
     return open(file, 'r')
 
 
-def create_5_letter_word_file_if_missing(out_file_name="five_letter_words.txt", input_file="word_dictionary.txt"):
+def create_5_letter_word_file_if_missing(out_file_name=DEFAULT_OUTPUT_FILE, input_file=DEFAULT_INPUT_FILE):
     if not exists(out_file_name):
-        create_5_letter_word_file(input_file)
+        create_5_letter_word_file(input_file, out_file_name)
     else:
         print("File \"{}\" exists. File will not be recreated.".format(out_file_name))
 

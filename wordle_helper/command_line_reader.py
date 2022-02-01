@@ -40,4 +40,4 @@ def parse_misplaced_character_inputs(misplaced_argument):
     values a and c respectively. Notice that the guesses are separated by commas.
     Example: convert from ['_','_','r','_','_','_',',','_','_','_','_','a','c'] to ['__r__','___ac']
     """
-    return "".join(misplaced_argument).split(',')
+    return "".join(misplaced_argument).split(',') if len(misplaced_argument) > 0 else []
