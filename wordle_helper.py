@@ -1,9 +1,9 @@
-from wordle_helper import main
+from wordle_helper.main import main
 
 
-def main():
-    wordle_helper.main()
+def execute():
+    main()
 
 
 if __name__ == '__main__':
-    main()
+    execute()

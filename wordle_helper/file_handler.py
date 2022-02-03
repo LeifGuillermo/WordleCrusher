@@ -4,7 +4,7 @@ from os.path import exists, dirname
 # THESE PATHS WILL NOT WORK WHEN RUN FROM PYTHON INTERPRETER DUE TO THE RELIANCE ON __FILE__
 PATH_TO_THIS_FILE = dirname(__file__)
 DEFAULT_OUTPUT_FILE = PATH_TO_THIS_FILE + '\\..\\dictionary_files\\five_letter_words.txt'
-DEFAULT_INPUT_FILE = PATH_TO_THIS_FILE + '\\..\\dictionary_files\\word_dictionary.txt'
+DEFAULT_INPUT_FILE = PATH_TO_THIS_FILE + '\\..\\dictionary_files\\wordle_dictionary.txt'
 
 
 def get_5_letter_word_file(file=DEFAULT_OUTPUT_FILE):
@@ -50,9 +50,8 @@ def prepare_words_for_reading(five_letter_words):
 
 
 def word_is_alphabetic_only(word):
-    word_with_removed_chars = re.sub(r'[^A-za-z]+', '', word)
-
-    if len(word_with_removed_chars) == len(word):
+    alphabetic_word = re.sub(r'[^A-za-z]+', '', word)
+    if len(alphabetic_word) == len(word):
         return True
     return False
 
