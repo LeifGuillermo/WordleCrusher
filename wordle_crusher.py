@@ -1,4 +1,4 @@
-from wordle_helper.main import main
+from wordle_crusher.main import main
 
 
 def execute():

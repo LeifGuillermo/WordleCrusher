@@ -2,7 +2,7 @@ import string
 
 import pytest
 
-import wordle_helper.word_filter as word_filter
+import wordle_crusher.word_filter as word_filter
 
 
 def test_get_top_five_most_common_characters(alphabet_count_dict):
@@ -32,13 +32,20 @@ def test_find_words_with_characters_for_guesses_out_of_place():
     words = ["worda", "wordb", "abcde"]
     guesses = []
 
-    result = word_filter.filter_words_by_characters_out_of_place(words.copy(), guesses)
+    result = word_filter.filter_words_by_characters_out_of_place(words.copy(), guesses.copy())
     assert result == words
 
-    guesses = ["____a, ____b"]
-    expected = ["abcde"]
-    result = word_filter.filter_words_by_characters_out_of_place(words.copy(), guesses)
-    assert result == expected
+    guesses2 = ["____e"]
+    result = word_filter.filter_words_by_characters_out_of_place(words.copy(), guesses2.copy())
+    assert result == {'worda', 'wordb'}
+
+    guesses2 = ["_o___"]
+    result = word_filter.filter_words_by_characters_out_of_place(words.copy(), guesses2.copy())
+    assert result == {"abcde"}
+
+    guesses3 = ["____b", "____a"]
+    result = word_filter.filter_words_by_characters_out_of_place(words.copy(), guesses3.copy())
+    assert result == {"abcde"}
 
 
 def test_get_chars_from_guesses():
@@ -61,6 +68,6 @@ def test_create_guess_char_indices_dict():
     guesses = ["a____", "_b___", "____c", "c____"]
 
     result = word_filter.create_guess_char_indices_dict(guesses)
-    expected = {'a': [0], 'b': [1], 'c': [0, 4]}
+    expected = {'a': [0], 'b': [1], 'c': [4, 0]}
 
     assert result == expected

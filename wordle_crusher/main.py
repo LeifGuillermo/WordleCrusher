@@ -1,7 +1,7 @@
 import re
 import string
 
-from wordle_helper import file_handler, command_line_reader, word_filter
+from wordle_crusher import file_handler, command_line_reader, word_filter
 
 
 def word_is_alphabetic_only(word):

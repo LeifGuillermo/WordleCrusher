@@ -29,6 +29,11 @@ def word_contains_all_characters_in_character_list(word, character_list):
 
 
 def filter_words_by_characters_out_of_place(words, guesses):
+    """
+    :param words: list of all words remaining in the dictionary
+    :param guesses: a list of guess-strings consisting of underscores and characters.
+    :return: a set of good words that have been filtered using the guesses
+    """
     if guesses is None or len(guesses) == 0:
         return words
 
@@ -50,9 +55,10 @@ def get_chars_from_guesses(guesses):
 
 def filter_words_with_characters_not_in_positions(words, char_indices):
     """
-    Loops through char_indices which is a dictionary of characters to indices where that character is not allowed
-    to show up in each word. If the char shows up in a word at the specified indices then the word is not included
-    in the final list that this method produces.
+    Loops through char_indices which is a dictionary of character keys to indices where that character is not allowed
+    (values) to show up in each word. If the char shows up in a word at the specified indices then the word is not
+    included in the final list that this method produces.
+    :return a set of good words
     """
     word_goodness = {}
     for word in words:
@@ -60,7 +66,7 @@ def filter_words_with_characters_not_in_positions(words, char_indices):
             word_is_good = not word_contains_char_at_indices(word, char, char_indices[char])
             if not word_is_good:
                 word_goodness[word] = False
-            if word_is_good and not ((word in word_goodness.keys()) and (not word_goodness[word] is False)):
+            elif word_is_good and not ((word in list(word_goodness.keys())) and (not word_goodness[word])):
                 word_goodness[word] = True
     good_words = [word for word in word_goodness.keys() if word_goodness[word] is True]
     return set(good_words)
@@ -78,6 +84,13 @@ def find_all_indices_of_char_in_word(word, character):
 
 
 def create_guess_char_indices_dict(guesses):
+    """
+    Loops over each guess, and then loops over each character in the guess. This method finds the index of the character
+    in the guess and then appends it to a list of indices which are set as the value of the character (key) in the
+    result map. Each non-underscore character in the guess is a key, and each key has a list of indices as its value.
+    :param guesses: a string representing a guess. e.g. __c__ represents a guess with c in the 2nd index position.
+    :return: a dictionary containing chars as keys and a list of indices from the guess as the value of each key
+    """
     char_indices = dict()
     for guess in guesses:
         for i in range(len(guess)):
@@ -87,7 +100,6 @@ def create_guess_char_indices_dict(guesses):
                     char_indices[char].append(i)
                 else:
                     char_indices[char] = [i]
-                add_non_underscore_char_index_to_guess_list(char, i, char_indices)
     return char_indices
 
 
@@ -96,17 +108,6 @@ def get_character_indices(char, index):
     if not char == '_':
         indices.append(index)
     return indices
-
-
-def add_non_underscore_char_index_to_guess_list(char, index, char_indices):
-    pass
-
-
-# if not char == '_':
-# if char not in char_indices.keys():
-#     char_indices[char] = [index]
-# else:
-#     char_indices[char] = char_indices[char].copy().append(index)
 
 
 def find_words_with_characters_at_indexes(words, index_list):
@@ -124,8 +125,6 @@ def remove_words_from_list_with_characters(word_list, character_list):
     words = [word for word in word_list if all(char not in word for char in character_list)]
     return words
 
-
-# ##################
 
 def filter_char_counts_base_off_of_remaining_words(available_words):
     return get_sorted_available_non_zero_counts(available_words)
