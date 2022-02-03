@@ -1,12 +1,19 @@
 import shlex
 from random import randint
 
-from file_handler import get_5_letter_word_file
-from main import get_5_letter_words_from_file
+from wordle_crusher.file_handler import get_5_letter_word_file
+from wordle_crusher.main import get_5_letter_words_from_file
 
-MISS = '\U0001F937'
-CORRECT = '\U0001F389'
-INCORRECT = '\U0001F4A9'
+# Emojis
+# MISS = '\U0001F937'
+# CORRECT = '\U0001F389'
+# INCORRECT = '\U0001F4A9'
+
+# Letters
+MISS = 'M'
+CORRECT = 'C'
+INCORRECT = 'I'
+
 guesses = []  # A list of tuples (character, index, hit/miss/incorrect)
 MAX_GUESSES = 6  # if word is not in dictionary it doesn't count toward guesses.
 num_guesses = 0
@@ -51,8 +58,7 @@ def check_guess_against_word_and_print_results(guess, words, hidden_word):
     result = check_guess_against_word(guess, hidden_word)
     guesses.append(result)
     print("Result of guesses:")
-    for gess in guesses:
-        print(gess)
+    print_guess_results(guesses)
 
     global MAX_GUESSES
     global num_guesses
@@ -66,6 +72,11 @@ def check_guess_against_word_and_print_results(guess, words, hidden_word):
     else:
         print("Try again.")
     return False
+
+
+def print_guess_results(guesses):
+    for guess in guesses:
+        print(guess)
 
 
 def validate_guess(guess, words):
