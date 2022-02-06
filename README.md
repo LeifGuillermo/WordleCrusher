@@ -6,8 +6,7 @@ There are two main scripts you can run as a user:
 
 * **wordle_crusher.py**
 * **game_clone.py**
-  <br>Both of these scripts run the **main.py** files in the respectively-named packages **wordle_crusher** and **
-  game_clone**.
+  <br>Both of these scripts run the **main.py** files in the respectively-named packages **wordle_crusher** and **game_clone**.
 
 The **game_clone** package is pretty straight-forward. The game exists in one file.*
 <br>* **_(subject to change. Hopefully I'll remember to update this README if it does.)_**

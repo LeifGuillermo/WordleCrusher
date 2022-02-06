@@ -126,20 +126,36 @@ def remove_words_from_list_with_characters(word_list, character_list):
     return words
 
 
-def filter_char_counts_base_off_of_remaining_words(available_words):
-    return get_sorted_available_non_zero_counts(available_words)
+def get_sorted_char_counts_based_off_of_remaining_words(available_words):
+    available_counts = create_character_in_word_count_dict(available_words)
+    return remove_zero_counts_from_characters_and_sort_into_dictionary(available_counts)
 
 
-def get_sorted_available_non_zero_counts(available_words):
-    available_counts = get_top_five_most_common_characters(available_words)
+def get_total_char_counts_sorted_based_off_of_remaining_words(available_words):
+    available_counts = create_total_character_count_dict(available_words)
+    return remove_zero_counts_from_characters_and_sort_into_dictionary(available_counts)
+
+
+def remove_zero_counts_from_characters_and_sort_into_dictionary(available_counts):
     available_counts = dict(filter(lambda element: element[1] > 0, available_counts.items()))
     return dict(sorted(available_counts.items(), key=lambda item: item[1], reverse=True))
 
 
-def get_top_five_most_common_characters(all_words_list):
+def create_total_character_count_dict(all_words_list):
     dictionary = dict.fromkeys(string.ascii_lowercase, 0)
     for word in all_words_list:
         for character in word.strip():
+            if character not in dictionary:
+                raise Exception("Non-alphabetic character: " + character)
+            else:
+                dictionary[character] = dictionary[character] + 1  # increment count for character
+    return dictionary
+
+
+def create_character_in_word_count_dict(all_words_list):
+    dictionary = dict.fromkeys(string.ascii_lowercase, 0)
+    for word in all_words_list:
+        for character in set(word.strip()):
             if character not in dictionary:
                 raise Exception("Non-alphabetic character: " + character)
             else:

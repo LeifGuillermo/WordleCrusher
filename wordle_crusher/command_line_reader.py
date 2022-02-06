@@ -17,7 +17,7 @@ def read_command_line_args():
 
     parser.add_argument('-r', "--ranked", action="store_true",
                         help="Print the most common characters in each position, ranked.")
-    parser.add_argument('-a', "--all", action="store_true", help="Print all 5-letter words.")
+    parser.add_argument('-t', "--total", action="store_true", help="Print the total number of words in the dictionary.")
     parser.add_argument('-p', "--printargs", action="store_true", help="Print the entered arguments")
 
     args = parser.parse_args()
@@ -29,7 +29,7 @@ def read_command_line_args():
 
     misplaced_arguments = parse_misplaced_character_inputs(args.misplaced)
 
-    return args.incorrect, misplaced_arguments, correct, args.ranked, args.all
+    return args.incorrect, misplaced_arguments, correct, args.ranked, args.total
 
 
 def parse_misplaced_character_inputs(misplaced_argument):
