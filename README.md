@@ -46,10 +46,6 @@ folder.
 
 * Make crusher application interactive (game_clone is already interactive) - this should just be a different script.
 * I'd like to keep the existing functionality because it does work well still.
-* Add 'suggested word ordering' since each available character exists in the available words, the words can be ordered
-  <br>based on the rankings of the available characters in the words.
-    * May want to make words with two or more of a character lower-ranking than words that do not have two or more of a
-      <br>character since that is more useful in finding out which characters are available and which aren't.
 * Update README usage for the game_clone
 * Add more unit tests
 * Consider looking into what can be object-oriented.
